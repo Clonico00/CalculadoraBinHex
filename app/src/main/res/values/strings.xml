@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">Calculadora</string>
+    <string name="unoButton">1</string>
+    <string name="dosButton">2</string>
+    <string name="tresButton">3</string>
+    <string name="cuatroButton">4</string>
+    <string name="cincoButton">5</string>
+    <string name="seisButton">6</string>
+    <string name="sieteButton">7</string>
+    <string name="ochoButton">8</string>
+    <string name="nueveButton">9</string>
+    <string name="ceroButton">0</string>
+    <string name="sumarButton">+</string>
+    <string name="restarButton">-</string>
+    <string name="multiplicarButton">*</string>
+    <string name="dividirButton">/</string>
+    <string name="puntoButton">.</string>
+    <string name="igualButton">=</string>
+    <string name="borrarButton">C</string>
+    <string name="decimalButton">Decimal</string>
+    <string name="binarioButton">Binario</string>
+    <string name="hexadecimalButton">Hexadecimal</string>
+    <string name="aButton">A</string>
+    <string name="bButton">B</string>
+    <string name="cButton">C</string>
+    <string name="dButton">D</string>
+    <string name="eButton">E</string>
+    <string name="fButton">F</string>
+
+
+</resources>
