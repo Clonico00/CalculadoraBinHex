@@ -90,7 +90,33 @@ class MainActivity : AppCompatActivity() {
             dButton.isEnabled = true
             eButton.isEnabled = true
             fButton.isEnabled = true
-        })
+
+                unoButton.setOnClickListener {
+                    numberActionH(unoButton)
+                }
+                ceroButton.setOnClickListener {
+                    numberActionH(ceroButton)
+                }
+                sumarButton.setOnClickListener {
+                    operacionActionH(sumarButton)
+                }
+                restarButton.setOnClickListener {
+                    operacionActionH(restarButton)
+                }
+                multiplicarButton.setOnClickListener {
+                    operacionActionH(multiplicarButton)
+                }
+                dividirButton.setOnClickListener {
+                    operacionActionH(dividirButton)
+                }
+                igualButton.setOnClickListener {
+                    igualActionH(igualButton)
+                }
+                borrarButton.setOnClickListener {
+                    borrarAction(borrarButton)
+                }
+
+            })
 
         }
     }
@@ -388,4 +414,179 @@ class MainActivity : AppCompatActivity() {
         resultadoTextView.text = ""
         operacionesTextView.text = ""
     }
+    //HEXADECIMAL
+    fun convertirHexDecim (hexaDecimalN:String) {
+        var i = hexaDecimalN.length - 1
+        var decimalN: Long = 0
+        var base = 1
+        while (i >= 0) {
+            val charAtPos = hexaDecimalN[i]
+
+            val lastDigit = if ((charAtPos >= '0') && (charAtPos <= '9')) {
+                charAtPos - '0'
+            } else if ((charAtPos >= 'A') && (charAtPos <= 'F')) {
+                charAtPos.toInt() - 55
+            } else if ((charAtPos >= 'a') && (charAtPos <= 'f')) {
+                charAtPos.toInt() - 87
+            } else {
+                0
+            }
+
+            decimalN += lastDigit * base
+            base *= 16
+
+            i--
+
+        }
+    }
+    fun numberActionH(view: View){
+        if(view is Button){
+            if (view.text == "."){
+                if (addDecimal){
+                    operacionesTextView.append(view.text)
+                    addDecimal = false
+                }
+            }
+            else
+                operacionesTextView.append(view.text)
+            addOperacion = true
+        }
+    }
+    //funcion que te permite añadir las operaciones si pulsas sobre ella y que controla que solo se pueda introducir un simbolo de operacion
+    fun operacionActionH(view: View){
+        if(view is Button && addOperacion){
+            operacionesTextView.append(view.text)
+            addOperacion = false
+            addDecimal = true
+        }
+    }
+    //funcion que llama a calcularResultados par asi al pulsar sobre el igual calcula lo introducido y lo muestra en resultadoTextView
+    fun igualActionH(view: View){
+        resultadoTextView.text = calcularResultadosB()
+    }
+    //funcion que llama a tres operaciones distintas dependiendo de la operacion introducida y asi si esa opecaion no ha sido utilizada de devuelve vacio
+    //son constantes ya que estas no deben cambiar en el proceso de ejecucion
+    fun calcularResultadosH(): String {
+        val digitsOperator = digitosOperadorH()
+        if(digitsOperator.isEmpty()) return ""
+
+        val timesDivision = timesDivisionCalculateH(digitsOperator)
+        if(timesDivision.isEmpty()) return ""
+
+        val result = addSubtractCalculateH(timesDivision)
+        return result.toString()
+    }
+    //funcion que calcula la suma y resta y nos devuelve un flotante pasandole una lista con todos los digitos introducidos
+    //que va recorriendo nuestra lista caracter a caracter y sumando o restando, al encontrarse con un + o con un -, opera con los digitos anteriores y siguientes
+    fun addSubtractCalculateH(passedList: MutableList<Any>): Int {
+        val result = passedList[0] as Long
+        var num = convertBinaryToDecimal(result)
+        for(i in passedList.indices)
+        {
+            if(passedList[i] is Char && i != passedList.lastIndex)
+            {
+                val operator = passedList[i]
+                val nextDigit = passedList[i+1] as Long
+                val num2 = convertBinaryToDecimal(nextDigit)
+                if(operator == '+')
+
+                    num += num2
+
+                if(operator == '-')
+                    num -= num2
+
+            }
+        }
+        Integer.toBinaryString(num)
+        return num
+    }
+    //funcion que recorre la lista en busca de los simbolos de multiplicar o restar y al encontralos llama a calcTimesDiv para realizar las operaciones correspondientes
+    fun timesDivisionCalculateH(passedList: MutableList<Any>): MutableList<Any> {
+        var list = passedList
+        while(list.contains('*') || list.contains('/'))
+        {
+            list = calcTimesDiv(list)
+        }
+        return list
+    }
+    //funcion que recorre la lista  caracter a caracter hasta llegar al final de esta y cuando encutra un * o un /, guarda el valor anterior y posterior y los multiplica o divide, guardados en variables como Float
+    //de no encontrar estos simbolos simplemente recorre y guarda los valores de la lista
+    fun calcTimesDivH(passedList: MutableList<Any>): MutableList<Any>
+    {
+        val newList = mutableListOf<Any>()
+        var restartIndex = passedList.size
+
+        for(i in passedList.indices)
+        {
+            if(passedList[i] is Char && i !=passedList.lastIndex && i < restartIndex){
+                val operator = passedList[i]
+                val prevDigit = passedList[i-1] as Long
+                val num = convertirHexDecim(prevDigit.toString())
+                val nextDigit = passedList[i+1] as Long
+                val num2 = convertirHexDecim(nextDigit.toString())
+                when(operator)
+                {
+                    '*' ->
+
+                    {/*   val result=num * num2
+                        Integer.toHexString(result)
+                        newList.add(result)
+                        restartIndex = i+1
+                    */}
+                    '/' ->
+                    {/*
+                        var result=num / num2
+                        Integer.toHexString(result)
+                        newList.add(result)
+                        restartIndex = i+1
+                    */}
+                    else ->{
+                        newList.add(num)
+                        newList.add(num2)
+                    }
+
+                }
+            }
+            if(i > restartIndex)
+                newList.add(passedList[i])
+        }
+        return newList
+    }
+    //funcion que sirve para guardar lo introducido por los botones en una lista ya sea un numero o un . y los convierte en float
+    fun digitosOperadorH(): MutableList<Any>{
+
+        val list = mutableListOf<Any>()
+        var currentDigital = ""
+
+        for(character in operacionesTextView.text)
+        {
+            if(character.isDigit() || character == '.')
+                currentDigital += character
+            else
+            {
+                list.add(currentDigital.toFloat())
+                currentDigital = ""
+                list.add(character)
+            }
+        }
+        if(currentDigital!="")
+            list.add(currentDigital.toFloat())
+
+        return list
+
+    }
+    //funcion que resetea los valores de los resultados
+    fun borrarActionH(view: View){
+        resultadoTextView.text = ""
+        operacionesTextView.text = ""
+    }
+    private operator fun Unit.div(num2: Unit) {
+
+    }
+
+    private operator fun Unit.times(num2: Unit) {
+
+    }
 }
+
+
