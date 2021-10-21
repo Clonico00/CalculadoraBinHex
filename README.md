@@ -1,4 +1,7 @@
 # CalculadoraBinHex
+
+Mi calculadora no opera con binario y hexadecimal cuando esta en landscape, solo puedes introducir los numeros o letras correspondientes a la operacion.
+
 Realizar una calculadora, los mínimos requisitos son:
 
 Landscape (vertical):
@@ -12,3 +15,4 @@ Landscape(horizontal):
   Otro button (Hex), al pulsarlo se convertirá en una calculadora en hexadecimal.
 
  Controlar todos los posibles errores.
+
